@@ -1,0 +1,11 @@
+.root{
+    -fx-background-color: silver;
+}
+.letters{
+    
+}
+
+#title{
+    -fx-font: normal bold 40px 'serif';
+    -fx-alignment: top-center;
+}
