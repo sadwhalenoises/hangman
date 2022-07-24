@@ -9,3 +9,11 @@
     -fx-font: normal bold 40px 'serif';
     -fx-alignment: top-center;
 }
+
+#visible-text{
+    -fx-text-fill: white;
+}
+
+#invisible-text{
+    -fx-text-fill: black;
+}
