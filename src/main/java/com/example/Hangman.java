@@ -15,6 +15,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.geometry.*;
+import javafx.event.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,13 +30,14 @@ import java.util.Random;
 /**
  * JavaFX App
  */
-public class Hangman extends Application {
+public class Hangman extends Application{
 
     private static Scene scene;
     private static Label titleLabel;
     private static Label userPrompt;
     public static Label[] stackLabel;
     public static TextField userText;
+    UserInput input = new UserInput();
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -84,14 +86,20 @@ public class Hangman extends Application {
 
     public FlowPane addCharacters(){
 
-        String str = Letters.randoLetters();
+        //String str = Letters.randoLetters();
+        String str = "test";
+        String vowels = "aeiou";
         stackLabel = new Label[str.length()];
         FlowPane charBorders = new FlowPane(10, 10);
         StackPane[] stack = new StackPane[str.length()];
 
         for(int i = 0; i <=str.length()-1; i++){
             stackLabel[i] = new Label(Character.toString(str.charAt(i)));
-            stackLabel[i].setId("visible-text");
+            if(vowels.contains(Character.toString(str.charAt(i)).toLowerCase())){
+                stackLabel[i].setId("visible-text");
+            }else{
+                stackLabel[i].setId("invisible-text");
+            }
             stack[i] = new StackPane();
             stack[i].getChildren().addAll(new Rectangle(50,50,Color.BLACK), stackLabel[i]);
             FlowPane.setMargin(stack[i], new Insets(50,2,250,2));
@@ -112,9 +120,25 @@ public class Hangman extends Application {
         userText.setMaxWidth(30);
         userPrompt = new Label("Enter a letter to guess");
         user.getChildren().addAll(userPrompt, userText);
+        UserInput.checkText(userText);
+
+        userText.setOnAction(new EventHandler<ActionEvent>(){
+
+            @Override
+            public void handle(ActionEvent e) {
+                input.actionEvent(e, stackLabel);
+                
+            }
+            
+        });
+
+
         FlowPane.setMargin(userText, new Insets(5,0,0,20));
         FlowPane.setMargin(userPrompt, new Insets(5,0,0,20));
 
+        
+        
+        
         return user;
 
 
@@ -156,4 +180,7 @@ public class Hangman extends Application {
         launch();
     }
 
+    
+
 }
+
