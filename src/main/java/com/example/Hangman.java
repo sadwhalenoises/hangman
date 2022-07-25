@@ -35,8 +35,11 @@ public class Hangman extends Application{
     private static Scene scene;
     private static Label titleLabel;
     private static Label userPrompt;
-    public static Label[] stackLabel;
-    public static TextField userText;
+    private static Label[] stackLabel;
+    private static TextField userText;
+    private static String enumString;
+    private static ImageView baseHangmanImage;
+    private static BorderPane rootNode;
     UserInput input = new UserInput();
 
     @Override
@@ -44,9 +47,10 @@ public class Hangman extends Application{
         titleLabel = new Label("Hangman");
         titleLabel.setId("title");
         stage.setTitle("Test Hangman Title");
+        enumString = input.getText(Letters.randoLetters());
 
 
-        BorderPane rootNode = new BorderPane();
+        rootNode = new BorderPane();
         rootNode.setTop(titleLabel);
         BorderPane.setAlignment(titleLabel, Pos.TOP_CENTER);
         rootNode.setCenter(addFBox());
@@ -61,24 +65,15 @@ public class Hangman extends Application{
         stage.show();
     }
 
-    public FlowPane addFBox() throws FileNotFoundException, NoSuchFileException{
+    public FlowPane addFBox(){
         FlowPane fpane = new FlowPane();
         fpane.setAlignment(Pos.CENTER);
-        try {
-
-            File file = new File("src/main/java/com/example/imgs/hangman/base.png");
-            if(file.exists()){
-            Image HangmanImg = new Image(file.toURI().toString());
-            ImageView baseHangmanImage = new ImageView(HangmanImg);
-            fpane.getChildren().add(baseHangmanImage);
-            FlowPane.setMargin(baseHangmanImage, new Insets(0,140,0,0));
-            }else{
-                System.out.println("file doesn't exist");
-            }
             
-        } catch (Exception e) {
-            System.out.println("Could not find image");
-        }
+        baseHangmanImage = new ImageView(input.changeImg());
+        fpane.getChildren().add(baseHangmanImage);
+        FlowPane.setMargin(baseHangmanImage, new Insets(0,140,0,0));
+        System.out.println("hi");
+            
         return fpane;
         
 
@@ -86,16 +81,15 @@ public class Hangman extends Application{
 
     public FlowPane addCharacters(){
 
-        //String str = Letters.randoLetters();
-        String str = "test";
+        
         String vowels = "aeiou";
-        stackLabel = new Label[str.length()];
+        stackLabel = new Label[enumString.length()];
         FlowPane charBorders = new FlowPane(10, 10);
-        StackPane[] stack = new StackPane[str.length()];
+        StackPane[] stack = new StackPane[enumString.length()];
 
-        for(int i = 0; i <=str.length()-1; i++){
-            stackLabel[i] = new Label(Character.toString(str.charAt(i)));
-            if(vowels.contains(Character.toString(str.charAt(i)).toLowerCase())){
+        for(int i = 0; i <=enumString.length()-1; i++){
+            stackLabel[i] = new Label(Character.toString(enumString.charAt(i)));
+            if(vowels.contains(Character.toString(enumString.charAt(i)).toLowerCase())){
                 stackLabel[i].setId("visible-text");
             }else{
                 stackLabel[i].setId("invisible-text");
@@ -105,7 +99,7 @@ public class Hangman extends Application{
             FlowPane.setMargin(stack[i], new Insets(50,2,250,2));
             charBorders.getChildren().add(stack[i]);
         }
-
+        
         
         charBorders.setAlignment(Pos.CENTER);
 
@@ -121,13 +115,13 @@ public class Hangman extends Application{
         userPrompt = new Label("Enter a letter to guess");
         user.getChildren().addAll(userPrompt, userText);
         UserInput.checkText(userText);
-
         userText.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override
             public void handle(ActionEvent e) {
-                input.actionEvent(e, stackLabel);
+                input.actionEvent(userText, stackLabel);
                 
+               rootNode.setCenter(addFBox()); 
             }
             
         });
